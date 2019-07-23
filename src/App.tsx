@@ -3,15 +3,38 @@ import { connect } from "react-redux";
 import "./App.css";
 import { RootState } from "./redux/reducers";
 import { INCREMENT } from "./redux/constants";
+import { counterActions } from "./redux/actions";
+
 
 interface ConnectProps {
   counter: number;
-  dispatch: any; //needed to add dispatch to props, but wasn't sure what Typescript would 'type' it as.
+  dispatch: any; // needed to add dispatch to props, but wasn't sure what Typescript would 'type' it as.
+}
+
+interface MyState {
+  loading: boolean;
 }
 
 type Props = {} & ConnectProps;
 
-export class App extends React.PureComponent<Props> {
+export class App extends React.PureComponent<Props, MyState> {
+  constructor(props: any){
+    super(props);
+    this.state = {
+      loading: false
+    }
+  }
+
+  handleDelayClick = async () => {
+    this.setState({
+      loading: true
+    });
+    await this.props.dispatch(counterActions.delayIncrement(this.props.counter))
+    this.setState({
+      loading: false
+    })
+  }
+
   render() {
     return (
       <>
@@ -28,6 +51,7 @@ export class App extends React.PureComponent<Props> {
               <div>
                 <p className="heading">Counter</p>
                 <p className="title">{this.props.counter}</p>
+                { this.state.loading ? <span>Loading...</span> : ''}
               </div>
             </div>
           </div>
@@ -39,7 +63,7 @@ export class App extends React.PureComponent<Props> {
               </button>
             </p>
             <p className="control">
-              <button className="button" id="delay-increment-btn">
+              <button className="button" id="delay-increment-btn" onClick={this.handleDelayClick}>
                 Click to increment slowly
               </button>
             </p>
