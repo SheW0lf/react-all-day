@@ -2,9 +2,11 @@ import * as React from "react";
 import { connect } from "react-redux";
 import "./App.css";
 import { RootState } from "./redux/reducers";
+import { INCREMENT } from "./redux/constants";
 
 interface ConnectProps {
   counter: number;
+  dispatch: any; //needed to add dispatch to props, but wasn't sure what Typescript would 'type' it as.
 }
 
 type Props = {} & ConnectProps;
@@ -32,7 +34,7 @@ export class App extends React.PureComponent<Props> {
           {/* Challenge 5: <div className="notification is-danger" /> */}
           <div className="field is-grouped">
             <p className="control">
-              <button className="button" id="increment-btn">
+              <button className="button" id="increment-btn" onClick={() => this.props.dispatch({ type: INCREMENT, payload: this.props.counter})}>
                 Click to increment
               </button>
             </p>
@@ -56,5 +58,6 @@ export class App extends React.PureComponent<Props> {
 const mapStateToProps = (state: RootState) => ({
   counter: state.counter.value
 });
+
 
 export default connect(mapStateToProps)(App);
